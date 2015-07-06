@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="3 seconds">
+	<contextName>long-polling-redis</contextName>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{32} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="com.github.kstyrc" level="DEBUG" />
+	<logger name="org.springframework" level="DEBUG" />
+    <logger name="com.studerw" level="ALL" />
+    <!--<logger name="ch.qos.logback" level="WARN" />-->
+
+	<jmxConfigurator />
+
+	<root level="WARN">
+		<appender-ref ref="STDOUT" />
+	</root>
+
+</configuration>
