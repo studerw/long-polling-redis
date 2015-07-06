@@ -3,9 +3,7 @@ package com.studerw.config;
 import static org.springframework.context.annotation.ComponentScan.Filter;
 
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 
@@ -13,12 +11,13 @@ import com.studerw.Application;
 
 @Configuration
 @ComponentScan(basePackageClasses = Application.class, excludeFilters = @Filter({Controller.class, Configuration.class}))
+@ImportResource("classpath:config/redis-config.xml")
 class ApplicationConfig {
 	
 	@Bean
 	public static PropertyPlaceholderConfigurer propertyPlaceholderConfigurer() {
 		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-		ppc.setLocation(new ClassPathResource("/app.properties"));
+		ppc.setLocation(new ClassPathResource("/config/app.properties"));
 		return ppc;
 	}
 	
