@@ -27,12 +27,22 @@ public class RedisTest {
 
     @Test
     public void testRedisServer() throws IOException {
-
         try {
             Assert.assertNotNull(redisServer);
             boolean isActive = redisServer.isActive();
             LOG.debug("IsActive: {}", isActive);
             Assert.assertTrue("Redis server is started", isActive);
+        } finally {
+            if (redisServer != null && redisServer.isActive()){
+                redisServer.stop();
+            }
+        }
+    }
+
+    @Test
+    public void testRedisWrite() throws IOException {
+        try {
+
         } finally {
             if (redisServer != null && redisServer.isActive()){
                 redisServer.stop();

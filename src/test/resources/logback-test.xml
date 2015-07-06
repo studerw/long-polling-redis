@@ -10,6 +10,7 @@
 		</encoder>
 	</appender>
 
+	<logger name="redis.clients" level="DEBUG"/>
 	<logger name="com.github.kstyrc" level="INFO" />
 	<logger name="org.springframework" level="WARN" />
     <logger name="com.studerw" level="ALL" />
