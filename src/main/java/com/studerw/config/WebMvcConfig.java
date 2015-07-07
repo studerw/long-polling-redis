@@ -1,16 +1,14 @@
 package com.studerw.config;
 
-import static org.springframework.context.annotation.ComponentScan.Filter;
-
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -21,10 +19,10 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
-import com.studerw.Application;
+import static org.springframework.context.annotation.ComponentScan.Filter;
 
 @Configuration
-@ComponentScan(basePackageClasses = Application.class, includeFilters = @Filter(Controller.class), useDefaultFilters = false)
+@ComponentScan(basePackages = {"com.studerw"}, includeFilters = @Filter(Controller.class), useDefaultFilters = false)
 class WebMvcConfig extends WebMvcConfigurationSupport {
 
     private static final String MESSAGE_SOURCE = "/WEB-INF/i18n/messages";
@@ -63,7 +61,6 @@ class WebMvcConfig extends WebMvcConfigurationSupport {
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setTemplateResolver(templateResolver());
-        templateEngine.addDialect(new SpringStandardDialect());
         return templateEngine;
     }
 
@@ -97,8 +94,7 @@ class WebMvcConfig extends WebMvcConfigurationSupport {
      */
     @Controller
     static class FaviconController {
-        @RequestMapping("favicon.ico")
-        String favicon() {
+        @RequestMapping("favicon.ico") String favicon() {
             return "forward:/resources/images/favicon.ico";
         }
     }

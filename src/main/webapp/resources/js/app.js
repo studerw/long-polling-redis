@@ -1,14 +1,20 @@
 var ping = function(){
-    $.ajax("/ping", {
+    var pingMsg = $('#pingMsg').val();
+    if (_.isEmpty(pingMsg)){
+        bootbox.alert("The messsage cannot be empty.", function () {});
+        return false;
+    }
+
+    $.ajax("/ping/" + pingMsg, {
         accepts: {
             text: "application/json"
         },
         success: function(data) {
             console.dir(data);
-            alert(data.message);
+            bootbox.alert(data.message, function () {});
         },
         error: function() {
-            alert("Error");
+            bootbox.alert("Error", function () {});
         }
     });
 };

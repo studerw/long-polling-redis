@@ -12,8 +12,8 @@
 
     <bean id="jedisConnFactory"
           class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-          p:port="6379"
-          p:hostName="localhost"
+          p:port="${test.redis.port}"
+          p:hostName="${test.redis.host}"
           p:usePool="true" depends-on="redisServer"/>
 
     <!-- redis template definition -->
