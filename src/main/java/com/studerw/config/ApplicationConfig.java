@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static org.springframework.context.annotation.ComponentScan.Filter;
 
 @Configuration
-@ComponentScan(excludeFilters = @Filter({Controller.class, Configuration.class}))
+@ComponentScan(basePackages = {"com.studerw"}, excludeFilters = @Filter({Controller.class, Configuration.class}))
 @PropertySource("classpath:config/app.properties")
 class ApplicationConfig {
 
