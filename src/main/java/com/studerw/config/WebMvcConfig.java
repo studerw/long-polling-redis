@@ -1,20 +1,21 @@
 package com.studerw.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.thymeleaf.spring4.SpringTemplateEngine;
-import org.thymeleaf.spring4.dialect.SpringStandardDialect;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
@@ -24,12 +25,24 @@ import static org.springframework.context.annotation.ComponentScan.Filter;
 @Configuration
 @ComponentScan(basePackages = {"com.studerw"}, includeFilters = @Filter(Controller.class), useDefaultFilters = false)
 class WebMvcConfig extends WebMvcConfigurationSupport {
-
+    private static final Logger LOG = LoggerFactory.getLogger(WebMvcConfig.class);
     private static final String MESSAGE_SOURCE = "/WEB-INF/i18n/messages";
     private static final String VIEWS = "/WEB-INF/views/";
-
     private static final String RESOURCES_LOCATION = "/resources/";
     private static final String RESOURCES_HANDLER = RESOURCES_LOCATION + "**";
+    @Autowired private Environment env;
+
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        Long timeout = this.env.getProperty("app.async.timeout", Long.class);
+        LOG.debug("Setting async timeout to {} ms.", timeout);
+        configurer.setDefaultTimeout(timeout);
+    }
+
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("redirect:/index");
+        registry.addViewController("/index").setViewName("index");
+    }
 
     @Override
     public RequestMappingHandlerMapping requestMappingHandlerMapping() {
@@ -83,6 +96,7 @@ class WebMvcConfig extends WebMvcConfigurationSupport {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(RESOURCES_HANDLER).addResourceLocations(RESOURCES_LOCATION);
     }
+
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {

@@ -1,44 +1,57 @@
-var ping = function(){
-    var pingMsg = $('#pingMsg').val();
-    if (_.isEmpty(pingMsg)){
-        bootbox.alert("The messsage cannot be empty.", function () {});
+var create = function () {
+    var newMsg = $('#postMsg').val();
+    if (_.isEmpty(newMsg)) {
+        bootbox.alert("The messsage cannot be empty.", function () {
+        });
         return false;
     }
 
-    $.ajax("/ping/" + pingMsg, {
+    $.ajax("/appMsgs", {
+        type: "POST",
+        data: {
+            msg: newMsg
+        },
         accepts: {
             text: "application/json"
         },
-        success: function(data) {
+        success: function (data) {
             console.dir(data);
-            bootbox.alert(data.message, function () {});
+            bootbox.alert(JSON.stringify(data), function () {
+            });
         },
-        error: function() {
-            bootbox.alert("Error", function () {});
+        error: function () {
+            bootbox.alert("Error", function () {
+            });
+        },
+        complete: function () {
+            $('#postMsg').val('');
         }
+
     });
 };
 
-var poll = function () {
-    $.ajax("/poll", {
+var readAll = function () {
+    $.ajax("/appMsgs", {
+        type: "GET",
         accepts: {
             text: "application/json"
         },
-        success: function(data) {
+        success: function (data) {
             console.dir(data);
-            alert(data.message);
+            bootbox.alert(JSON.stringify(data), function () {
+            });
         },
-        error: function() {
+        error: function () {
             alert("Error");
         }
     });
 };
 
-$( document ).ready(function() {
-    $('#pingBtn').click(function(){
-        ping();
+$(document).ready(function () {
+    $('#postBtn').click(function () {
+        create();
     });
-    $('#pollBtn').click(function(){
-        poll();
+    $('#pollBtn').click(function () {
+        readAll();
     })
 });

@@ -1,7 +1,6 @@
-package com.studerw;
+package com.studerw.appMsg;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.joda.time.DateTime;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -9,16 +8,16 @@ import java.util.Comparator;
 /**
  * Created by studerw on 7/10/2015.
  */
-public class Message implements Serializable, Comparator<Message> {
+public class AppMsg implements Serializable, Comparator<AppMsg> {
 
     private Integer id;
     private String message;
-    private DateTime timeStamp;
+    private Long timeStamp;
 
-    public Message(Integer id, String message) {
+    public AppMsg(Integer id, String message) {
         this.id = id;
         this.message = message;
-        this.timeStamp = new DateTime();
+        this.timeStamp = System.currentTimeMillis();
     }
 
     public Integer getId() {
@@ -37,11 +36,11 @@ public class Message implements Serializable, Comparator<Message> {
         this.message = message;
     }
 
-    public DateTime getTimeStamp() {
+    public Long getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(DateTime timeStamp) {
+    public void setTimeStamp(Long timeStamp) {
         this.timeStamp = timeStamp;
     }
 
@@ -59,9 +58,9 @@ public class Message implements Serializable, Comparator<Message> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Message message = (Message) o;
+        AppMsg appMsg = (AppMsg) o;
 
-        return id.equals(message.id);
+        return id.equals(appMsg.id);
 
     }
 
@@ -71,7 +70,7 @@ public class Message implements Serializable, Comparator<Message> {
     }
 
     @Override
-    public int compare(Message o1, Message o2) {
-        return o1.getTimeStamp().compareTo(o2.getTimeStamp());
+    public int compare(AppMsg o1, AppMsg o2) {
+        return o1.getId().compareTo(o2.getId());
     }
 }
