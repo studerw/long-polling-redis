@@ -8,12 +8,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.context.request.async.DeferredResult;
 import redis.embedded.RedisServer;
@@ -32,6 +34,11 @@ class ApplicationConfig {
     @Autowired private Environment env;
     @Autowired private AppMsgHandler appMsgHandler;
 
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
+
     @Bean(initMethod = "start", destroyMethod = "stop")
     public RedisServer redisServer() throws IOException {
         String host = env.getProperty("app.redis.host", String.class);
@@ -41,12 +48,17 @@ class ApplicationConfig {
     }
 
     @Bean
+    MessageListenerAdapter messageListener() {
+        return new MessageListenerAdapter( appMsgHandler );
+    }
+
+    @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer() {
         RedisMessageListenerContainer mlc = new RedisMessageListenerContainer();
         mlc.setConnectionFactory(redisConnectionFactory());
         String topicName = env.getProperty("app.topic.name");
-        LOG.info("Adding MessageHandler to topic: {}", topicName);
-        mlc.addMessageListener(appMsgHandler, new PatternTopic(topicName));
+        LOG.info("Adding MessageListenerAdapter[appMsgHandler] to topic: {}", topicName);
+        mlc.addMessageListener(messageListener(), new PatternTopic(topicName));
         return mlc;
     }
 

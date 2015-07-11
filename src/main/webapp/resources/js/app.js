@@ -51,7 +51,4 @@ $(document).ready(function () {
     $('#postBtn').click(function () {
         create();
     });
-    $('#pollBtn').click(function () {
-        readAll();
-    })
 });

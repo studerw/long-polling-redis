@@ -7,6 +7,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,7 @@ import static org.springframework.context.annotation.ComponentScan.Filter;
 
 @Configuration
 @ComponentScan(basePackages = {"com.studerw"}, includeFilters = @Filter(Controller.class), useDefaultFilters = false)
+@PropertySource("classpath:config/app.properties")
 class WebMvcConfig extends WebMvcConfigurationSupport {
     private static final Logger LOG = LoggerFactory.getLogger(WebMvcConfig.class);
     private static final String MESSAGE_SOURCE = "/WEB-INF/i18n/messages";
@@ -31,6 +34,11 @@ class WebMvcConfig extends WebMvcConfigurationSupport {
     private static final String RESOURCES_LOCATION = "/resources/";
     private static final String RESOURCES_HANDLER = RESOURCES_LOCATION + "**";
     @Autowired private Environment env;
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
     @Override
     public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
