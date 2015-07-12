@@ -27,6 +27,10 @@ public class AppMsgRepo {
     protected String topicName;
 
 
+    public int count() {
+        return this.appMsgs.size();
+    }
+
     public int deleteAll() {
         int count = appMsgs.size();
         LOG.info("Deleting all: {} messages", count);
@@ -58,6 +62,5 @@ public class AppMsgRepo {
         List<AppMsg> temp = this.appMsgs.subList(startId, size);
         return Collections.unmodifiableList(temp);
     }
-
 
 }

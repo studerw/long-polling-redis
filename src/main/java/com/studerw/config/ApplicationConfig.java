@@ -1,5 +1,6 @@
 package com.studerw.config;
 
+import com.studerw.appMsg.AppMsg;
 import com.studerw.appMsg.AppMsgHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import redis.embedded.RedisServer;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.springframework.context.annotation.ComponentScan.Filter;
@@ -47,9 +49,8 @@ class ApplicationConfig {
         return new RedisServer(port);
     }
 
-    @Bean
-    MessageListenerAdapter messageListener() {
-        return new MessageListenerAdapter( appMsgHandler );
+    @Bean MessageListenerAdapter messageListener() {
+        return new MessageListenerAdapter(appMsgHandler);
     }
 
     @Bean
@@ -81,8 +82,11 @@ class ApplicationConfig {
         return redisTemplate;
     }
 
+    /**
+     * @return a map of deferred results. The integer value represents the minimum message index to obtain
+     */
     @Bean(name = "waitingRequests")
-    public ConcurrentHashMap<DeferredResult, String> waitingRequests() {
+    public ConcurrentHashMap<DeferredResult<List<AppMsg>>, Integer> waitingRequests() {
         return new ConcurrentHashMap<>();
     }
 

@@ -1,16 +1,19 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <title>Redis Long Polling Example</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link href="/resources/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/resources/css/bootstrap.min.css}"/>
+    <link href="/resources/css/bootstrap.min.css" rel="stylesheet" media="screen" />
     <style type="text/css">
         body {
             padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
             padding-bottom: 40px;
             background-color: #f5f5f5;
         }
-
         .form-narrow {
             max-width: 490px;
             padding: 19px 29px 29px;
@@ -30,8 +33,8 @@
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-    <script src="/resources/js/html5shiv.js" th:src="@{/resources/js/html5shiv.js}" type="text/javascript"></script>
-    <script src="/resources/js/respond.min.js" th:src="@{/resources/js/respond.min.js}" type="text/javascript"></script>
+    <script src="/resources/js/html5shiv.js"  type="text/javascript"></script>
+    <script src="/resources/js/respond.min.js"  type="text/javascript"></script>
     <![endif]-->
 
 </head>
@@ -61,12 +64,6 @@
 </div>
 
 <div class="container">
-    <!-- /* Handle the flash message */-->
-    <th:block th:if="${message != null}">
-        <!-- /* The message code is returned from the @Controller */ -->
-        <div th:replace="fragments/alert :: alert (type=${#strings.toLowerCase(message.type)}, message=#{${message.message}}">
-            &nbsp;</div>
-    </th:block>
     <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies dapibus leo. Praesent eu eros
         sagittis, viverra mi vitae, porttitor orci. Sed ornare ex ut enim imperdiet ultrices. Cras condimentum nunc
@@ -80,42 +77,54 @@
         facilisis mi quis pretium eleifend. Fusce gravida hendrerit euismod. Quisque maximus nunc in nisl bibendum
         euismod. Maecenas consequat orci ac enim egestas, ac imperdiet lectus eleifend. Ut in elementum erat. Vestibulum
     </p>
+    <hr/>
 
     <div class="row">
         <div class="col-md-4">
             <h4>Send message</h4>
 
-            <div class="form-group">
-                <label for="postMsg">Message to Send</label>
-                <input type="text" class="form-control" id="postMsg" placeholder="Message" required="true"/>
-            </div>
-            <button id="postBtn" class="btn btn-default" type="button">Send</button>
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="postMsg" placeholder="Message" required="true"/>
+                </div>
+                <button id="postBtn" class="btn btn-default" type="button">Send</button>
 
+            </form>
         </div>
         <div class="col-md-4">
-            <h4>Long Poller</h4>
+            <h4>Long Poller (<span id="longCount" data-count="0">0</span> requests)</h4>
             <ul id="longPollList">
 
             </ul>
         </div>
         <div class="col-md-4">
-            <h4>Naive Poller</h4>
+            <h4>Naive Poller (<span id="naiveCount" data-count="0">0</span> requests)</h4>
             <ul id="naivePollList">
 
             </ul>
         </div>
     </div>
+    <hr/>
+    <div class="row" style="margin-top: 2em;">
+        <button id="deleteBtn" class="btn btn-default pull-right" type="button">Delete All Messages</button>
+    </div>
 </div>
 </body>
 
-<script th:utext="'var APP = APP || {};'"></script>
-<script th:utext="'var APP.pollTime = ${pollTime};'"></script>
+<script type="application/javascript">
+    var APP = APP || {};
+    APP.pollTime = ${pollTime};
+    APP.asyncTimeout = ${asyncTimeout};
+    APP.naiveIndex = 0;
+    APP.longIndex = 0;
+</script>
 
-<script src="/resources/js/jquery-1.11.3.min.js" th:src="@{/resources/js/jquery-1.11.3.min.js}" type="text/javascript"></script>
-<script src="/resources/js/json2.js" th:src="@{/resources/js/json2.js}" type="text/javascript"></script>
-<script src="/resources/js/bootstrap.min.js" th:src="@{/resources/js/bootstrap.min.js}" type="text/javascript"></script>
-<script src="/resources/js/underscore-min.js" th:src="@{/resources/js/underscore-min.js}" type="text/javascript"></script>
-<script src="/resources/js/bootbox.min.js" th:src="@{/resources/js/bootbox.min.js}" type="text/javascript"></script>
-<script src="/resources/js/app.js" th:src="@{/resources/js/app.js}" type="text/javascript"></script>
+<script src="/resources/js/jquery-1.11.3.min.js" type="text/javascript"></script>
+<script src="/resources/js/json2.js"  type="text/javascript"></script>
+<script src="/resources/js/bootstrap.min.js"  type="text/javascript"></script>
+<script src="/resources/js/underscore-min.js"  type="text/javascript"></script>
+<script src="/resources/js/bootbox.min.js"  type="text/javascript"></script>
+<script src="/resources/js/jquery.bootstrap-growl.min.js"  type="text/javascript"></script>
+<script src="/resources/js/app.js"  type="text/javascript"></script>
 
 </html>

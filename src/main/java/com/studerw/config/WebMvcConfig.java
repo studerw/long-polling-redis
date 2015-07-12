@@ -17,10 +17,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.thymeleaf.spring4.SpringTemplateEngine;
-import org.thymeleaf.spring4.view.ThymeleafViewResolver;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-import org.thymeleaf.templateresolver.TemplateResolver;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import static org.springframework.context.annotation.ComponentScan.Filter;
 
@@ -68,30 +65,40 @@ class WebMvcConfig extends WebMvcConfigurationSupport {
         return messageSource;
     }
 
+    //JSTL
     @Bean
-    public TemplateResolver templateResolver() {
-        TemplateResolver templateResolver = new ServletContextTemplateResolver();
-        templateResolver.setPrefix(VIEWS);
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode("HTML5");
-        templateResolver.setCacheable(false);
-        return templateResolver;
+    public InternalResourceViewResolver viewResolver() {
+        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+        resolver.setPrefix(VIEWS);
+        resolver.setSuffix(".jsp");
+        return resolver;
     }
 
-    @Bean
-    public SpringTemplateEngine templateEngine() {
-        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver());
-        return templateEngine;
-    }
-
-    @Bean
-    public ThymeleafViewResolver viewResolver() {
-        ThymeleafViewResolver thymeleafViewResolver = new ThymeleafViewResolver();
-        thymeleafViewResolver.setTemplateEngine(templateEngine());
-        thymeleafViewResolver.setCharacterEncoding("UTF-8");
-        return thymeleafViewResolver;
-    }
+    //Thymeleaf
+//    @Bean
+//    public TemplateResolver templateResolver() {
+//        TemplateResolver templateResolver = new ServletContextTemplateResolver();
+//        templateResolver.setPrefix(VIEWS);
+//        templateResolver.setSuffix(".html");
+//        templateResolver.setTemplateMode("HTML5");
+//        templateResolver.setCacheable(false);
+//        return templateResolver;
+//    }
+//
+//    @Bean
+//    public SpringTemplateEngine templateEngine() {
+//        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+//        templateEngine.setTemplateResolver(templateResolver());
+//        return templateEngine;
+//    }
+//
+//    @Bean
+//    public ThymeleafViewResolver viewResolver() {
+//        ThymeleafViewResolver thymeleafViewResolver = new ThymeleafViewResolver();
+//        thymeleafViewResolver.setTemplateEngine(templateEngine());
+//        thymeleafViewResolver.setCharacterEncoding("UTF-8");
+//        return thymeleafViewResolver;
+//    }
 
     @Override
     public Validator getValidator() {
