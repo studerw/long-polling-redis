@@ -6,9 +6,9 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * Created by studerw on 7/10/2015.
+ * @author William Studer
  */
-public class AppMsg implements Serializable, Comparator<AppMsg> {
+public class AppMsg implements Serializable, Comparable<AppMsg> {
 
     private Integer id;
     private String message;
@@ -69,8 +69,9 @@ public class AppMsg implements Serializable, Comparator<AppMsg> {
         return id.hashCode();
     }
 
+
     @Override
-    public int compare(AppMsg o1, AppMsg o2) {
-        return o1.getId().compareTo(o2.getId());
+    public int compareTo(AppMsg o) {
+        return this.getId().compareTo(o.getId());
     }
 }

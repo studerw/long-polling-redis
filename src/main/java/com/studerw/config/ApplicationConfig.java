@@ -14,6 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
@@ -45,7 +46,7 @@ class ApplicationConfig {
     public RedisServer redisServer() throws IOException {
         String host = env.getProperty("app.redis.host", String.class);
         Integer port = env.getProperty("app.redis.port", Integer.class);
-        LOG.debug("Creating new embedded Redit Server at {}:{}", host, port);
+        LOG.info("Creating new embedded Redis Server at {}:{}", host, port);
         return new RedisServer(port);
     }
 
@@ -68,26 +69,18 @@ class ApplicationConfig {
         JedisConnectionFactory cf = new JedisConnectionFactory();
         String host = this.env.getProperty("app.redis.host");
         Integer port = this.env.getProperty("app.redis.port", Integer.class);
+        LOG.info("Creating new Redis Connection factory at host={}, port={}.", host, port);
         cf.setHostName(host);
         cf.setPort(port);
         cf.setUsePool(true);
         return cf;
     }
 
-
     @Bean
-    public RedisTemplate redisTemplate() {
-        RedisTemplate redisTemplate = new RedisTemplate();
+    public StringRedisTemplate redisTemplate() {
+        StringRedisTemplate redisTemplate = new StringRedisTemplate();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
-    }
-
-    /**
-     * @return a map of deferred results. The integer value represents the minimum message index to obtain
-     */
-    @Bean(name = "waitingRequests")
-    public ConcurrentHashMap<DeferredResult<List<AppMsg>>, Integer> waitingRequests() {
-        return new ConcurrentHashMap<>();
     }
 
 }

@@ -17,6 +17,7 @@ class ExceptionHandler {
 	 */
 	@org.springframework.web.bind.annotation.ExceptionHandler(value = Exception.class)	
 	public ModelAndView exception(Exception exception, WebRequest request) {
+		exception.printStackTrace();
 		ModelAndView modelAndView = new ModelAndView("error/general");
 		modelAndView.addObject("errorMessage", Throwables.getRootCause(exception));
 		return modelAndView;

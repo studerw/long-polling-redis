@@ -10,6 +10,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -23,15 +24,40 @@ public class AppMsgHandler implements MessageListener {
     private static final Logger LOG = LoggerFactory.getLogger(AppMsgHandler.class);
     private final static Charset UTF8 = StandardCharsets.UTF_8;
 
-    @Autowired ConcurrentHashMap<DeferredResult<List<AppMsg>>, Integer> waitingRequests;
-    @Autowired AppMsgRepo appMsgRepo;
+    private ConcurrentHashMap<DeferredResult<List<AppMsg>>, Integer> waitingRequests = new ConcurrentHashMap<>();
+    private AppMsgRepo appMsgRepo;
 
+    @Autowired
+    public void setAppMsgRepo(AppMsgRepo appMsgRepo) {
+        this.appMsgRepo = appMsgRepo;
+    }
+
+    public void clear() {
+        this.waitingRequests.clear();
+    }
+
+    /**
+     * @param startId the start index for which messages should be returned
+     */
+    public void addAsyncRequest(final DeferredResult<List<AppMsg>> deferredResult, Integer startId) {
+        //add the deferred result to the map of waiting requests. The {@code AppMsgHandler} will set the result when a message
+        //ping is encountered from Redis.
+        this.waitingRequests.put(deferredResult, startId);
+        deferredResult.onTimeout(new Runnable() {
+            @Override
+            public void run() {
+                LOG.info("Request timed out (returning empty list.");
+                waitingRequests.remove(deferredResult);
+                deferredResult.setResult(Collections.EMPTY_LIST);
+            }
+        });
+    }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         LOG.info("RedisPub: {} on Channel: {}", new String(message.getBody(), UTF8), new String(message.getChannel(), UTF8));
         Iterator<Map.Entry<DeferredResult<List<AppMsg>>, Integer>> it = waitingRequests.entrySet().iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             Map.Entry<DeferredResult<List<AppMsg>>, Integer> entry = it.next();
             List<AppMsg> messages = appMsgRepo.readSubset(entry.getValue());
             entry.getKey().setResult(messages);

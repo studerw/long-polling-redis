@@ -1,81 +1,60 @@
-//Naive Poller just runs again and again, trying for new messages.
-setInterval(function () {
-    $.ajax({
-        url: "/appMsgs?startId=" + APP.naiveIndex,
+APP.syncPoll = function (index) {
+    return $.ajax({
+        url: SERVLET_CONTEXT + "/appMsgs?startId=" + index,
         accepts: {
             text: "application/json"
-        },
-        success: function (data) {
-            var timeInSecs = Math.floor(Date.now() / 1000);
-            var msgList = $('#naivePollList');
-            _.each(data, function (appMsg) {
-                var id = appMsg.id;
-                var latency = Math.floor(timeInSecs - (appMsg.timeStamp / 1000));
-                APP.naiveIndex = (id >= APP.naiveIndex) ? id + 1 : APP.naiveIndex;
-                var childLi = '<li>' + id + ':   ' + appMsg.message + ' [Latency=' + latency + ' seconds]' + '</li>';
-                msgList.append(childLi);
-            });
-        },
-        error: function () {
-            bootbox.alert("Error", function () {
-            });
-        },
-        complete: function () {
-            var node = $('#naiveCount');
-            var count = node.data('count');
-            count = parseInt(count) + 1;
-            node.attr('data-count', count).text(count);
         }
 
     });
-}, APP.pollTime);
+};
 
-//Long Poller - uses Spring deferredResults and async servlet handling
-(function longPoll() {
-    debugger;
-    setTimeout(function () {
-        $.ajax({
-            url: "appMsgsAsync?startId=" + APP.longIndex,
-            accepts: {
-                text: "application/json"
-            },
-            success: function (data) {
-                //Update your dashboard gauge
-                var timeInSecs = Math.floor(Date.now() / 1000);
-                var msgList = $('#longPollList');
-                _.each(data, function (appMsg) {
-                    var id = appMsg.id;
-                    var latency = Math.floor(timeInSecs - (appMsg.timeStamp / 1000));
-                    APP.longIndex = (id >= APP.longIndex) ? id + 1 : APP.longIndex;
-                    var childLi = '<li>' + id + ':   ' + appMsg.message + ' [Latency=' + latency + ' seconds]' + '</li>';
-                    msgList.append(childLi);
-                });
+APP.asyncPoll = function (index) {
+    return $.ajax({
+        url: SERVLET_CONTEXT + "appMsgsAsync?startId=" + index,
+        accepts: {
+            text: "application/json"
+        }
+    });
+};
 
+APP.updateSync = function (data) {
+    _.each(data, function (appMsg) {
+        var id = appMsg.id;
+        var latency = Date.now() - appMsg.timeStamp;
+        if (latency > 1000){
+            latency = Math.floor(latency / 1000)  + ' second(s)'
+        }
+        else {
+            latency = latency +  ' ms';
+        }
+        APP.syncIndex = (id >= APP.syncIndex) ? id + 1 : APP.syncIndex;
+        $('#syncTable tbody').append('<tr><td>'+appMsg.id+'</td><td>'+appMsg.message+'</td><td>'+latency+'</td></tr>');
+    });
+    ($('#syncTable tr').length > 0) ? $('#syncTable').show() : $('#syncTable').hide();
 
-                //Setup the next poll recursively
-                longPoll();
-            },
-            error: function () {
-                bootbox.alert("Error", function () {
-                });
-            },
-            complete: function () {
-                var node = $('#longCount');
-                var count = node.data('count');
-                count = parseInt(count) + 1;
-                node.attr('data-count', count).text(count);
-            }
+}
 
+APP.updateAsync = function (data) {
+    _.each(data, function (appMsg) {
+        var id = appMsg.id;
+        var latency = Date.now() - appMsg.timeStamp;
+        if (latency > 1000){
+            latency = Math.floor(latency / 1000)  + ' second(s)'
+        }
+        else {
+            latency = latency +  ' ms';
+        }
+        APP.asyncIndex = (id >= APP.asyncIndex) ? id + 1 : APP.asyncIndex;
+        $('#asyncTable tbody').append('<tr><td>'+appMsg.id+'</td><td>'+appMsg.message+'</td><td>'+latency+'</td></tr>');
+    });
+    ($('#asyncTable tr').length > 0) ? $('#asyncTable').show() : $('#asyncTable').hide();
 
-        });
-    }, APP.asyncTimeout);
-})();
+};
 
-var create = function () {
+APP.create = function () {
     var newMsg = $('#postMsg').val();
     if (_.isEmpty(newMsg)) {
-        bootbox.alert("The messsage cannot be empty.", function () {
-        });
+        bootbox.alert("The messsage cannot be empty.", function () {});
         return false;
     }
 
@@ -88,7 +67,7 @@ var create = function () {
             text: "application/json"
         },
         success: function (data) {
-            $.bootstrapGrowl("Added message: " + data.id + " ->" + data.message, {
+            $.bootstrapGrowl("Added message (" + data.id + "): " + data.message, {
                 align: 'right',
                 type: 'success',
                 width: 'auto',
@@ -107,26 +86,26 @@ var create = function () {
     });
 };
 
-var deleteMsgs = function () {
-    $.ajax("/appMsgs", {
-        type: "DELETE",
-        accepts: {
-            text: "application/json"
-        },
-        success: function (data) {
-            $.bootstrapGrowl("Deleted " + data + ' messages.', {
-                align: 'right',
-                type: 'success',
-                width: 'auto',
-                offset: {from: 'bottom', amount: 20}, // 'top', or 'bottom'
-            });
-        },
-        error: function () {
-            bootbox.alert("Error", function () {
-            });
-        },
-    });
-};
+//APP.deleteMsgs = function () {
+//    $.ajax("/appMsgs", {
+//        type: "DELETE",
+//        accepts: {
+//            text: "application/json"
+//        },
+//        success: function (data) {
+//            $.bootstrapGrowl("Deleted " + data + ' messages.', {
+//                align: 'right',
+//                type: 'success',
+//                width: 'auto',
+//                offset: {from: 'bottom', amount: 20}, // 'top', or 'bottom'
+//            });
+//        },
+//        error: function () {
+//            bootbox.alert("Error", function () {
+//            });
+//        },
+//    });
+//};
 
 
 var readAll = function () {
@@ -137,8 +116,7 @@ var readAll = function () {
         },
         success: function (data) {
             console.dir(data);
-            bootbox.alert(JSON.stringify(data), function () {
-            });
+            bootbox.alert(JSON.stringify(data), function () {});
         },
         error: function () {
             alert("Error");
@@ -148,9 +126,42 @@ var readAll = function () {
 
 $(document).ready(function () {
     $('#postBtn').click(function () {
-        create();
+        APP.create();
     });
-    $('#deleteBtn').click(function () {
-        deleteMsgs();
-    });
+    //$('#deleteBtn').click(function () {
+    //    APP.deleteMsgs();
+    //});
+
+    //setup the sync poller
+    setInterval(function () {
+        $('#syncSpinner').show();
+        APP.syncPoll(APP.syncIndex).done(function (result) {
+            console.dir(result);
+            APP.updateSync(result)
+        }).always(function (result) {
+            $('#syncSpinner').hide();
+            var node = $('#syncCount');
+            var count = $(node).attr('data-count');
+            count = parseInt(count) + 1;
+            $(node).attr('data-count', count.toString()).text(count.toString());
+        });
+    }, APP.pollTime);
+
+    APP.recurseAsync = function(){
+        $('#asyncSpinner').show();
+        APP.asyncPoll(APP.asyncIndex).
+            done(function (result) {
+                console.dir(result);
+                APP.updateAsync(result);
+
+            }).always(function (result) {
+                $('#asyncSpinner').hide();
+                var node = $('#asyncCount');
+                var count = $(node).attr('data-count');
+                count = parseInt(count) + 1;
+                $(node).attr('data-count', count.toString()).text(count.toString());
+                APP.recurseAsync();
+            });
+    };
+    APP.recurseAsync();
 });
