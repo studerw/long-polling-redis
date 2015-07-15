@@ -1,9 +1,9 @@
 package com.studerw.support.web;
 
-import static com.studerw.support.web.FlashMessage.MESSAGE_ATTRIBUTE;
-
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import static com.studerw.support.web.FlashMessage.MESSAGE_ATTRIBUTE;
 
 public final class FlashMessageHelper {
 

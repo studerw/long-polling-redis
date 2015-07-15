@@ -3,7 +3,6 @@ package com.studerw.appMsg;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
-import java.util.Comparator;
 
 /**
  * @author William Studer

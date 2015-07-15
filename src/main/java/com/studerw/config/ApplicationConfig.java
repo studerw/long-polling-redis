@@ -1,6 +1,5 @@
 package com.studerw.config;
 
-import com.studerw.appMsg.AppMsg;
 import com.studerw.appMsg.AppMsgHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,18 +12,14 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.context.request.async.DeferredResult;
 import redis.embedded.RedisServer;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.springframework.context.annotation.ComponentScan.Filter;
 

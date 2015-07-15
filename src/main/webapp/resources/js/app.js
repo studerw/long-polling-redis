@@ -30,7 +30,7 @@ APP.updateSync = function (data) {
         APP.syncIndex = (id >= APP.syncIndex) ? id + 1 : APP.syncIndex;
         $('#syncTable tbody').append('<tr><td>'+appMsg.id+'</td><td>'+appMsg.message+'</td><td>'+latency+'</td></tr>');
     });
-    ($('#syncTable tr').length > 0) ? $('#syncTable').show() : $('#syncTable').hide();
+    ($('#syncTable tbody tr').length > 0) ? $('#syncTable').show() : $('#syncTable').hide();
 
 }
 
@@ -47,7 +47,7 @@ APP.updateAsync = function (data) {
         APP.asyncIndex = (id >= APP.asyncIndex) ? id + 1 : APP.asyncIndex;
         $('#asyncTable tbody').append('<tr><td>'+appMsg.id+'</td><td>'+appMsg.message+'</td><td>'+latency+'</td></tr>');
     });
-    ($('#asyncTable tr').length > 0) ? $('#asyncTable').show() : $('#asyncTable').hide();
+    ($('#asyncTable tbody tr').length > 0) ? $('#asyncTable').show() : $('#asyncTable').hide();
 
 };
 
@@ -136,7 +136,6 @@ $(document).ready(function () {
     setInterval(function () {
         $('#syncSpinner').show();
         APP.syncPoll(APP.syncIndex).done(function (result) {
-            console.dir(result);
             APP.updateSync(result)
         }).always(function (result) {
             $('#syncSpinner').hide();
@@ -151,16 +150,21 @@ $(document).ready(function () {
         $('#asyncSpinner').show();
         APP.asyncPoll(APP.asyncIndex).
             done(function (result) {
-                console.dir(result);
                 APP.updateAsync(result);
-
+                APP.recurseAsync();
             }).always(function (result) {
                 $('#asyncSpinner').hide();
                 var node = $('#asyncCount');
                 var count = $(node).attr('data-count');
                 count = parseInt(count) + 1;
                 $(node).attr('data-count', count.toString()).text(count.toString());
-                APP.recurseAsync();
+            }).
+            error(function(result) {
+                console.dir(arguments);
+                console.log("error making async call - waiting 60 seconds until next try");
+                setTimeout(function(){
+                    APP.recurseAsync();
+                }, 60000)
             });
     };
     APP.recurseAsync();
