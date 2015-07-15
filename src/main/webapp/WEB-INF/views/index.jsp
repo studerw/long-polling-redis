@@ -3,12 +3,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<c:set var="context" value="${pageContext.request.contextPath}/app"/>
 
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Redis Long Polling Example</title>
+    <link rel="icon" href="${context}/resources/images/favicon.ico">
     <link href="${context}/resources/css/bootstrap.min.css" rel="stylesheet" media="screen"/>
     <style type="text/css">
         body {
@@ -18,10 +21,6 @@
         }
     </style>
 
-    <c:set var="context" value="${pageContext.request.contextPath}"/>
-    <script type="text/javascript">
-        var SERVLET_CONTEXT = '${pageContext.request.contextPath}';
-    </script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -150,6 +149,7 @@
 </div>
 
 <script type="application/javascript">
+    var SERVLET_CONTEXT = '${pageContext.request.contextPath}' + '/app';
     var APP = APP || {};
     APP.pollTime = ${pollTime};
     <%--APP.asyncTimeout = ${asyncTimeout} + 2000;--%>

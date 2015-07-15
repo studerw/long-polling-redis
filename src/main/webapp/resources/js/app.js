@@ -10,7 +10,7 @@ APP.syncPoll = function (index) {
 
 APP.asyncPoll = function (index) {
     return $.ajax({
-        url: SERVLET_CONTEXT + "appMsgsAsync?startId=" + index,
+        url: SERVLET_CONTEXT + "/appMsgsAsync?startId=" + index,
         accepts: {
             text: "application/json"
         }
@@ -58,7 +58,8 @@ APP.create = function () {
         return false;
     }
 
-    $.ajax("/appMsgs", {
+    $.ajax({
+        url: SERVLET_CONTEXT + "/appMsgs",
         type: "POST",
         data: {
             msg: newMsg
@@ -75,8 +76,9 @@ APP.create = function () {
 
             });
         },
-        error: function () {
-            bootbox.alert("Error", function () {
+        error: function (xhr, errorMsg, msg) {
+            console.dir(arguments);
+            bootbox.alert("Error: " +msg, function () {
             });
         },
         complete: function () {
@@ -138,7 +140,11 @@ $(document).ready(function () {
         APP.syncPoll(APP.syncIndex).done(function (result) {
             APP.updateSync(result)
         }).always(function (result) {
-            $('#syncSpinner').hide();
+            //add a bit of delay to the hide so that the user actually sees that the request is happening
+            setInterval(function(){
+                $('#syncSpinner').hide();
+            }, 2000);
+
             var node = $('#syncCount');
             var count = $(node).attr('data-count');
             count = parseInt(count) + 1;
