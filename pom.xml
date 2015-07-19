@@ -268,7 +268,7 @@
             <plugin>
                 <groupId>org.jboss.as.plugins</groupId>
                 <artifactId>jboss-as-maven-plugin</artifactId>
-                <version>7.5.Final</version>
+                <version>7.7.Final</version>
                 <configuration>
                     <filename>${project.build.finalName}.${project.packaging}</filename>
                     <hostname>127.0.0.1</hostname>
