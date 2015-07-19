@@ -1,16 +1,16 @@
 package com.studerw.config;
 
 import org.springframework.web.filter.CharacterEncodingFilter;
-import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.ServletRegistration;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"/"};
+        return new String[]{"/app/*"};
     }
 
     @Override

@@ -46,7 +46,7 @@ class WebMvcConfig extends WebMvcConfigurationSupport {
 
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("redirect:/index");
-        registry.addViewController("/index").setViewName("index");
+//        registry.addViewController("/index").setViewName("index");
     }
 
     @Override
@@ -118,13 +118,4 @@ class WebMvcConfig extends WebMvcConfigurationSupport {
         configurer.enable();
     }
 
-    /**
-     * Handles favicon.ico requests assuring no <code>404 Not Found</code> error is returned.
-     */
-    @Controller
-    static class FaviconController {
-        @RequestMapping("favicon.ico") String favicon() {
-            return "forward:/resources/images/favicon.ico";
-        }
-    }
 }

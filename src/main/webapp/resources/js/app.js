@@ -10,7 +10,7 @@ APP.syncPoll = function (index) {
 
 APP.asyncPoll = function (index) {
     return $.ajax({
-        url: SERVLET_CONTEXT + "appMsgsAsync?startId=" + index,
+        url: SERVLET_CONTEXT + "/appMsgsAsync?startId=" + index,
         accepts: {
             text: "application/json"
         }
@@ -30,7 +30,7 @@ APP.updateSync = function (data) {
         APP.syncIndex = (id >= APP.syncIndex) ? id + 1 : APP.syncIndex;
         $('#syncTable tbody').append('<tr><td>'+appMsg.id+'</td><td>'+appMsg.message+'</td><td>'+latency+'</td></tr>');
     });
-    ($('#syncTable tr').length > 0) ? $('#syncTable').show() : $('#syncTable').hide();
+    ($('#syncTable tbody tr').length > 0) ? $('#syncTable').show() : $('#syncTable').hide();
 
 }
 
@@ -47,7 +47,7 @@ APP.updateAsync = function (data) {
         APP.asyncIndex = (id >= APP.asyncIndex) ? id + 1 : APP.asyncIndex;
         $('#asyncTable tbody').append('<tr><td>'+appMsg.id+'</td><td>'+appMsg.message+'</td><td>'+latency+'</td></tr>');
     });
-    ($('#asyncTable tr').length > 0) ? $('#asyncTable').show() : $('#asyncTable').hide();
+    ($('#asyncTable tbody tr').length > 0) ? $('#asyncTable').show() : $('#asyncTable').hide();
 
 };
 
@@ -58,7 +58,8 @@ APP.create = function () {
         return false;
     }
 
-    $.ajax("/appMsgs", {
+    $.ajax({
+        url: SERVLET_CONTEXT + "/appMsgs",
         type: "POST",
         data: {
             msg: newMsg
@@ -75,12 +76,13 @@ APP.create = function () {
 
             });
         },
-        error: function () {
-            bootbox.alert("Error", function () {
+        error: function (xhr, errorMsg, msg) {
+            console.dir(arguments);
+            bootbox.alert("Error: " +msg, function () {
             });
         },
         complete: function () {
-            $('#postMsg').val('');
+            $('#postMsg').val('').focus();
         }
 
     });
@@ -125,6 +127,7 @@ var readAll = function () {
 };
 
 $(document).ready(function () {
+    $('#postMsg').focus();
     $('#postBtn').click(function () {
         APP.create();
     });
@@ -133,34 +136,53 @@ $(document).ready(function () {
     //});
 
     //setup the sync poller
-    setInterval(function () {
+    APP.poll = function(){
         $('#syncSpinner').show();
-        APP.syncPoll(APP.syncIndex).done(function (result) {
-            console.dir(result);
-            APP.updateSync(result)
-        }).always(function (result) {
-            $('#syncSpinner').hide();
-            var node = $('#syncCount');
-            var count = $(node).attr('data-count');
-            count = parseInt(count) + 1;
-            $(node).attr('data-count', count.toString()).text(count.toString());
-        });
-    }, APP.pollTime);
+        APP.syncPoll(APP.syncIndex).
+            always(function (result) {
+                //add a bit of delay to the hide so that the user actually sees that the request is happening
+                setTimeout(function(){
+                    $('#syncSpinner').hide();
+                }, 2000);
+
+                var node = $('#syncCount');
+                var count = $(node).attr('data-count');
+                count = parseInt(count) + 1;
+                $(node).attr('data-count', count.toString()).text(count.toString());
+            }).
+            done(function (result) {
+                APP.updateSync(result)
+            }).
+            error(function(result) {
+                console.dir(arguments);
+                console.log("error making sync call");
+            });
+    };
+    //initial call
+    APP.poll();
+    //poll using setInterval
+    setInterval(APP.poll, APP.pollTime);
 
     APP.recurseAsync = function(){
         $('#asyncSpinner').show();
         APP.asyncPoll(APP.asyncIndex).
-            done(function (result) {
-                console.dir(result);
-                APP.updateAsync(result);
-
-            }).always(function (result) {
+            always(function (result) {
                 $('#asyncSpinner').hide();
                 var node = $('#asyncCount');
                 var count = $(node).attr('data-count');
                 count = parseInt(count) + 1;
                 $(node).attr('data-count', count.toString()).text(count.toString());
+            }).
+            done(function (result) {
+                APP.updateAsync(result);
                 APP.recurseAsync();
+            }).
+            error(function(result) {
+                console.dir(arguments);
+                console.log("error making async call - waiting 60 seconds until next try");
+                setTimeout;(function(){
+                    APP.recurseAsync();
+                }, 60000)
             });
     };
     APP.recurseAsync();
