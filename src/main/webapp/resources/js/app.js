@@ -82,7 +82,7 @@ APP.create = function () {
             });
         },
         complete: function () {
-            $('#postMsg').val('');
+            $('#postMsg').val('').focus();
         }
 
     });
@@ -127,6 +127,7 @@ var readAll = function () {
 };
 
 $(document).ready(function () {
+    $('#postMsg').focus();
     $('#postBtn').click(function () {
         APP.create();
     });
@@ -135,40 +136,51 @@ $(document).ready(function () {
     //});
 
     //setup the sync poller
-    setInterval(function () {
+    APP.poll = function(){
         $('#syncSpinner').show();
-        APP.syncPoll(APP.syncIndex).done(function (result) {
-            APP.updateSync(result)
-        }).always(function (result) {
-            //add a bit of delay to the hide so that the user actually sees that the request is happening
-            setInterval(function(){
-                $('#syncSpinner').hide();
-            }, 2000);
+        APP.syncPoll(APP.syncIndex).
+            always(function (result) {
+                //add a bit of delay to the hide so that the user actually sees that the request is happening
+                setTimeout(function(){
+                    $('#syncSpinner').hide();
+                }, 2000);
 
-            var node = $('#syncCount');
-            var count = $(node).attr('data-count');
-            count = parseInt(count) + 1;
-            $(node).attr('data-count', count.toString()).text(count.toString());
-        });
-    }, APP.pollTime);
+                var node = $('#syncCount');
+                var count = $(node).attr('data-count');
+                count = parseInt(count) + 1;
+                $(node).attr('data-count', count.toString()).text(count.toString());
+            }).
+            done(function (result) {
+                APP.updateSync(result)
+            }).
+            error(function(result) {
+                console.dir(arguments);
+                console.log("error making sync call");
+            });
+    };
+    //initial call
+    APP.poll();
+    //poll using setInterval
+    setInterval(APP.poll, APP.pollTime);
 
     APP.recurseAsync = function(){
         $('#asyncSpinner').show();
         APP.asyncPoll(APP.asyncIndex).
-            done(function (result) {
-                APP.updateAsync(result);
-                APP.recurseAsync();
-            }).always(function (result) {
+            always(function (result) {
                 $('#asyncSpinner').hide();
                 var node = $('#asyncCount');
                 var count = $(node).attr('data-count');
                 count = parseInt(count) + 1;
                 $(node).attr('data-count', count.toString()).text(count.toString());
             }).
+            done(function (result) {
+                APP.updateAsync(result);
+                APP.recurseAsync();
+            }).
             error(function(result) {
                 console.dir(arguments);
                 console.log("error making async call - waiting 60 seconds until next try");
-                setTimeout(function(){
+                setTimeout;(function(){
                     APP.recurseAsync();
                 }, 60000)
             });

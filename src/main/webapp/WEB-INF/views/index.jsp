@@ -93,9 +93,9 @@
         <div>
             <h4>Send message</h4>
 
-            <form class="form-inline">
+            <form id="appMsgForm" class="form-inline">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="postMsg" placeholder="Message" required="true"/>
+                    <input type="text" class="form-control" id="postMsg" name="postMsg" placeholder="Message" required="true"/>
                 </div>
                 <button id="postBtn" class="btn btn-primary" type="button">Send</button>
 

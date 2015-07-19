@@ -26,7 +26,7 @@ From the command line, run:
 $ mvn tomcat7:run
 ````
 
-Open your browser to [http://127.0.0.1:8080](http://127.0.0.1:8080).
+Open your browser to [http://127.0.0.1:8080/long-polling-redis](http://127.0.0.1:8080/long-polling-redis).
 
 In the input box, add messages.
 

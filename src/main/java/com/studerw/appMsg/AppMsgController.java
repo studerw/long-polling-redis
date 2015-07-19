@@ -69,7 +69,7 @@ public class AppMsgController {
         startId = startId == null ? 0 : startId;
 
         //create the deferred result with an empty collection in case of error, no timeout is set
-        final DeferredResult<List<AppMsg>> deferredResult = new DeferredResult<List<AppMsg>>(null, Collections.EMPTY_LIST);
+        final DeferredResult<List<AppMsg>> deferredResult = new DeferredResult<List<AppMsg>>(asyncTimeout, Collections.EMPTY_LIST);
         appMsgHandler.addAsyncRequest(deferredResult, startId);
         //If there are messages that have yet to be processed, no need to deal with the pubsub - just get them. The client will
         //next have to make a new request that should immediately block.

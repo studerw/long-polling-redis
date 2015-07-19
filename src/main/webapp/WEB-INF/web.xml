@@ -8,6 +8,10 @@
     	<!--<location>/generalError</location>-->
 	<!--</error-page>-->
 
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
 	<session-config>
 		<tracking-mode>COOKIE</tracking-mode>
 	</session-config>
