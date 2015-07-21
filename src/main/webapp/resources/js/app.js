@@ -131,6 +131,12 @@ $(document).ready(function () {
     $('#postBtn').click(function () {
         APP.create();
     });
+
+    //$('#postMsg').keypress('keyup', function(e) {
+    //    if ( e.keyCode === 13 ) { // 13 is enter key
+    //        APP.create();
+    //    }
+    //});
     //$('#deleteBtn').click(function () {
     //    APP.deleteMsgs();
     //});
@@ -177,12 +183,17 @@ $(document).ready(function () {
                 APP.updateAsync(result);
                 APP.recurseAsync();
             }).
-            error(function(result) {
+            error(function(xhr, errorStr, statusTxt) {
                 console.dir(arguments);
                 console.log("error making async call - waiting 60 seconds until next try");
-                setTimeout;(function(){
+                //proxy timeout - let's just start again
+                if (xhr.status === 504){
                     APP.recurseAsync();
-                }, 60000)
+                }
+                //some other error - possibly the server went down
+                else {
+                    setTimeout(APP.recurseAsync, 60000);
+                }
             });
     };
     APP.recurseAsync();
