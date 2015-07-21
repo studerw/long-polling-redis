@@ -180,9 +180,13 @@ $(document).ready(function () {
             error(function(result) {
                 console.dir(arguments);
                 console.log("error making async call - waiting 60 seconds until next try");
-                setTimeout;(function(){
+                if (xhr.status === 504){
                     APP.recurseAsync();
-                }, 60000)
+                }
+                //some other error - possibly the server went down
+                else {
+                    setTimeout(APP.recurseAsync, 60000);
+                }
             });
     };
     APP.recurseAsync();
