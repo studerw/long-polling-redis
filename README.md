@@ -1,8 +1,6 @@
 *Note that if the application is not shutdown correctly (happens on Cygwin with Tomcat7 and Maven), the embedded
-Redis server will leave a large temporary file; it's size can be as large as the amount of system RAM your machine contains.
-You should delete the directory if it is not cleaned up by the app. On Windows 7, this directory is located
-at ~\AppData\Local\Redis*
-
+Redis server will not be shutdown correctly. The application will not be able to start again due to the port
+binding. Look in the process explorer for an app called `redis-server-x.y.x` and kill it.*
 
 # long-polling-redis
 Example App showing client side long polling using Spring MVC and Redis Pub/Sub.
