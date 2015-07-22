@@ -1,5 +1,5 @@
 *Note that if the application is not shutdown correctly (happens on Cygwin with Tomcat7 and Maven), the embedded
-Redis server will not stopped. The application will not be able to start again due to the port
+Redis server will not be stopped. The application will not be able to start again due to the port
 binding, and a large Redis temporary file will take up space in your home directory. Look in the process explorer for an app called `redis-server-x.y.x` and kill it.*
 
 # long-polling-redis
