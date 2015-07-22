@@ -70,12 +70,16 @@ public class AppMsgController {
 
         //create the deferred result with an empty collection in case of error, no timeout is set
         final DeferredResult<List<AppMsg>> deferredResult = new DeferredResult<List<AppMsg>>(asyncTimeout, Collections.EMPTY_LIST);
-        appMsgHandler.addAsyncRequest(deferredResult, startId);
+
         //If there are messages that have yet to be processed, no need to deal with the pubsub - just get them. The client will
         //next have to make a new request that should immediately block.
         List<AppMsg> messages = this.appMsgRepo.readSubset(startId);
         if (!messages.isEmpty()) {
             deferredResult.setResult(messages);
+        }
+        //No new messages - let's wait for pubsub alert
+        else {
+            appMsgHandler.addAsyncRequest(deferredResult, startId);
         }
 
         return deferredResult;
@@ -104,6 +108,17 @@ public class AppMsgController {
     public ResponseEntity<Integer> appMsgs() {
         Integer count = this.appMsgRepo.deleteAll();
         LOG.debug("Deleted all {} messages", count);
+        return new ResponseEntity<Integer>(count, HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @return a count of waiting async requests
+     */
+    @RequestMapping(value = "/asyncRequests", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Integer> asyncCount() {
+        Integer count = this.appMsgHandler.count();
+        LOG.debug("Count of waiting async requests: {}", count);
         return new ResponseEntity<Integer>(count, HttpStatus.OK);
     }
 
