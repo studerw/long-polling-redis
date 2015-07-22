@@ -177,7 +177,7 @@ $(document).ready(function () {
                 APP.updateAsync(result);
                 APP.recurseAsync();
             }).
-            error(function(result) {
+            error(function(xhr, errorStr, errorMsg) {
                 console.dir(arguments);
                 console.log("error making async call - waiting 60 seconds until next try");
                 if (xhr.status === 504){
