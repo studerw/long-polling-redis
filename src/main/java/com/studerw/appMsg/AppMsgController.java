@@ -107,5 +107,13 @@ public class AppMsgController {
         return new ResponseEntity<Integer>(count, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/asyncRequests", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Integer> asyncCount() {
+        Integer count = this.appMsgHandler.count();
+        LOG.debug("Count of waiting async requests: {}", count);
+        return new ResponseEntity<Integer>(count, HttpStatus.OK);
+    }
+
+
 
 }

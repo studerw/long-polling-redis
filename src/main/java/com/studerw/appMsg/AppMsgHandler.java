@@ -42,15 +42,21 @@ public class AppMsgHandler implements MessageListener {
     public void addAsyncRequest(final DeferredResult<List<AppMsg>> deferredResult, Integer startId) {
         //add the deferred result to the map of waiting requests. The {@code AppMsgHandler} will set the result when a message
         //ping is encountered from Redis.
-        this.waitingRequests.put(deferredResult, startId);
         deferredResult.onTimeout(new Runnable() {
             @Override
             public void run() {
-                LOG.info("Request timed out (returning empty list.");
+                LOG.warn("Aysnc Request timed out (returning empty list.");
                 waitingRequests.remove(deferredResult);
                 deferredResult.setResult(Collections.EMPTY_LIST);
             }
         });
+
+        this.waitingRequests.put(deferredResult, startId);
+
+    }
+
+    public int count(){
+        return this.waitingRequests.size();
     }
 
     @Override
