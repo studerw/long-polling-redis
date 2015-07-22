@@ -144,7 +144,6 @@
             </table>
         </div>
     </div>
-    <hr/>
     <%--<div class="row" style="margin-top: 2em;">--%>
     <%--<button id="deleteBtn" class="btn btn-default pull-right" type="button">Delete All Messages</button>--%>
     <%--</div>--%>
