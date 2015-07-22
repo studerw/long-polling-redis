@@ -271,7 +271,7 @@
                 <version>7.7.Final</version>
                 <configuration>
                     <filename>${project.build.finalName}.${project.packaging}</filename>
-                    <hostname>127.0.0.1</hostname>
+                    <hostname>192.168.9.15</hostname>
                     <port>9999</port>
                     <name>long-polling-redis.war</name>
                     <username>root</username>

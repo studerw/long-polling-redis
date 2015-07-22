@@ -58,7 +58,7 @@
 <div class="container" style="background-color: white;">
     <div class="row">
         <div class="col-md-7">
-            <p class="bg-info" style="padding: 1em;">
+            <p class="bg-info" style="padding: 1em; margin: .5em;">
                 Add messages using the form on the right. The spinners represent ongoing requests.
             </p>
             <hr/>
@@ -79,7 +79,7 @@
 
             <p>
                 The right column shows the traditional attempt with polling. Every 10 seconds (configurable in
-                app.properties
+                <em>app.properties</em>
                 file),
                 the front-end will make a call to the server requesting new messages. The server responds immediately with
                 the
@@ -112,7 +112,8 @@
 
             <p class="text-success"><span id="asyncCount" data-count="0">0</span> request(s)</p>
             <%--<h5>Timeout: ${asyncTimeout / 1000} seconds</h5>--%>
-            <table id="asyncTable" class="table table-condensed table-striped" style="display:none">
+            <hr/>
+            <table id="asyncTable" class="table table-condensed table-striped clearfix" style="display:none">
                 <thead>
                 <tr>
                     <td>Index</td>
@@ -129,7 +130,8 @@
             <h4>Repeating Sync Poller</h4>
 
             <p class="text-success"><span id="syncCount" data-count="0">0</span> request(s) @ ${pollTime / 1000} secs/poll</p>
-            <table id="syncTable" class="table table-condensed table-striped" style="display:none">
+            <hr/>
+            <table id="syncTable" class="table table-condensed table-striped clearfix" style="display:none">
                 <thead>
                 <tr>
                     <td>Index</td>
