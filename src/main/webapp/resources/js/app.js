@@ -179,12 +179,13 @@ $(document).ready(function () {
             }).
             error(function(xhr, errorStr, errorMsg) {
                 console.dir(arguments);
-                console.log("error making async call - waiting 60 seconds until next try");
                 if (xhr.status === 504){
+                    console.log("Proxy Timeout - making new call immediately.");
                     APP.recurseAsync();
                 }
                 //some other error - possibly the server went down
                 else {
+                    console.log("error making async call (server might be down)- waiting 60 seconds until next try.");
                     setTimeout(APP.recurseAsync, 60000);
                 }
             });
