@@ -45,7 +45,16 @@ public class AppMsgHandler implements MessageListener {
         deferredResult.onTimeout(new Runnable() {
             @Override
             public void run() {
-                LOG.info("Request timed out (returning empty list.");
+                LOG.debug("Request timed out (returning empty list.");
+                waitingRequests.remove(deferredResult);
+                deferredResult.setResult(Collections.EMPTY_LIST);
+            }
+        });
+
+        deferredResult.onCompletion(new Runnable() {
+            @Override
+            public void run() {
+                LOG.debug("Request completed");
                 waitingRequests.remove(deferredResult);
                 deferredResult.setResult(Collections.EMPTY_LIST);
             }
