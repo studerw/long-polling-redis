@@ -40,8 +40,7 @@ public class AppMsgHandler implements MessageListener {
      * @param startId the start index for which messages should be returned
      */
     public void addAsyncRequest(final DeferredResult<List<AppMsg>> deferredResult, Integer startId) {
-        //add the deferred result to the map of waiting requests. The {@code AppMsgHandler} will set the result when a message
-        //ping is encountered from Redis.
+
         deferredResult.onTimeout(new Runnable() {
             @Override
             public void run() {
@@ -50,14 +49,24 @@ public class AppMsgHandler implements MessageListener {
                 deferredResult.setResult(Collections.EMPTY_LIST);
             }
         });
+        deferredResult.onCompletion(new Runnable() {
+            @Override
+            public void run() {
+                LOG.debug("Request completed - removing from queue of async results");
+                waitingRequests.remove(deferredResult);
+            }
+        });
 
+        //add the deferred result to the map of waiting requests. The {@code AppMsgHandler} will set the result when a message
+        //ping is encountered from Redis.
         this.waitingRequests.put(deferredResult, startId);
 
     }
-
     public int count(){
         return this.waitingRequests.size();
     }
+
+
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
