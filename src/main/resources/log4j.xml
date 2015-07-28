@@ -29,11 +29,8 @@
 
 
     <logger name="org.springframework">
-        <level value="INFO"/>
-    </logger>
-
-    <logger name="org.springframework.security">
-        <level value="INFO"/>
+        <level value="INFO
+        "/>
     </logger>
 
     <logger name="org.apache">

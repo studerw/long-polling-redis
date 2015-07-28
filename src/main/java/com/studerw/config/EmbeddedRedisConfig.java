@@ -15,14 +15,14 @@ import java.io.IOException;
  * @author studerw
  */
 @Configuration
-@Profile("embedded")
+//@Profile("embedded")
 public class EmbeddedRedisConfig {
     private static final Logger LOG = LoggerFactory.getLogger(EmbeddedRedisConfig.class);
 
     @Autowired
     private Environment env;
 
-    @Bean(initMethod = "start", destroyMethod = "stop")
+    @Bean(name="redisServer", initMethod = "start", destroyMethod = "stop")
     public RedisServer redisServer() throws IOException {
         String host = env.getProperty("app.redis.host", String.class);
         Integer port = env.getProperty("app.redis.port", Integer.class);

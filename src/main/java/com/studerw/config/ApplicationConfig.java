@@ -54,6 +54,7 @@ class ApplicationConfig {
     }
 
     @Bean
+    @DependsOn(value = "redisServer")
     public RedisConnectionFactory redisConnectionFactory() {
         JedisConnectionFactory cf = new JedisConnectionFactory();
         String host = this.env.getProperty("app.redis.host");
