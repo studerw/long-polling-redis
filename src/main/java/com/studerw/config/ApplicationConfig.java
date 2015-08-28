@@ -4,10 +4,7 @@ import com.studerw.appMsg.AppMsgHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -17,6 +14,7 @@ import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Controller;
+import redis.embedded.RedisExecProvider;
 import redis.embedded.RedisServer;
 
 import java.io.IOException;
@@ -37,12 +35,15 @@ class ApplicationConfig {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    public RedisServer redisServer() throws IOException {
+    @Bean(destroyMethod = "stop")
+    public RedisServer redisServer() throws IOException, InterruptedException {
         String host = env.getProperty("app.redis.host", String.class);
         Integer port = env.getProperty("app.redis.port", Integer.class);
         LOG.info("Creating new embedded Redis Server at {}:{}", host, port);
-        return new RedisServer(port);
+        RedisServer redisServer = new HeaplessRedisServer(port);
+        LOG.info("Starting new Redis Server...");
+        redisServer.start();
+        return redisServer;
     }
 
     @Bean MessageListenerAdapter messageListener() {
@@ -60,6 +61,7 @@ class ApplicationConfig {
     }
 
     @Bean
+    @DependsOn(value = "redisServer")
     public RedisConnectionFactory redisConnectionFactory() {
         JedisConnectionFactory cf = new JedisConnectionFactory();
         String host = this.env.getProperty("app.redis.host");
