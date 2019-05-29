@@ -14,8 +14,6 @@ import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Controller;
-import redis.embedded.RedisExecProvider;
-import redis.embedded.RedisServer;
 
 import java.io.IOException;
 
@@ -35,16 +33,17 @@ class ApplicationConfig {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
-    @Bean(destroyMethod = "stop")
-    public RedisServer redisServer() throws IOException, InterruptedException {
-        String host = env.getProperty("app.redis.host", String.class);
-        Integer port = env.getProperty("app.redis.port", Integer.class);
-        LOG.info("Creating new embedded Redis Server at {}:{}", host, port);
-        RedisServer redisServer = new HeaplessRedisServer(port);
-        LOG.info("Starting new Redis Server...");
-        redisServer.start();
-        return redisServer;
-    }
+    // removing embedded redis - going to docker may 2019
+//    @Bean(destroyMethod = "stop")
+//    public RedisServer redisServer() throws IOException, InterruptedException {
+//        String host = env.getProperty("app.redis.host", String.class);
+//        Integer port = env.getProperty("app.redis.port", Integer.class);
+//        LOG.info("Creating new embedded Redis Server at {}:{}", host, port);
+//        RedisServer redisServer = new HeaplessRedisServer(port);
+//        LOG.info("Starting new Redis Server...");
+//        redisServer.start();
+//        return redisServer;
+//    }
 
     @Bean MessageListenerAdapter messageListener() {
         return new MessageListenerAdapter(appMsgHandler);
@@ -61,7 +60,7 @@ class ApplicationConfig {
     }
 
     @Bean
-    @DependsOn(value = "redisServer")
+//    @DependsOn(value = "redisServer")
     public RedisConnectionFactory redisConnectionFactory() {
         JedisConnectionFactory cf = new JedisConnectionFactory();
         String host = this.env.getProperty("app.redis.host");

@@ -11,7 +11,6 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import redis.embedded.RedisServer;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -29,24 +28,23 @@ public class RedisTest {
     private static final String PREFIX = RedisTest.class.getSimpleName();
     private static final String UTF8 = StandardCharsets.UTF_8.displayName();
 
-    @Autowired RedisServer redisServer;
     @Autowired RedisTemplate redisTemplate;
     @Autowired RedisConnectionFactory connectionFactory;
 
-    @Test
-    public void testRedisServer() throws IOException {
-        try {
-            Assert.assertNotNull(redisServer);
-            boolean isActive = redisServer.isActive();
-            LOG.debug("IsActive: {}", isActive);
-            Assert.assertTrue("Redis server is started", isActive);
-        }
-        finally {
-            if (redisServer != null && redisServer.isActive()) {
-                redisServer.stop();
-            }
-        }
-    }
+//    @Test
+//    public void testRedisServer() throws IOException {
+//        try {
+//            Assert.assertNotNull(redisServer);
+//            boolean isActive = redisServer.isActive();
+//            LOG.debug("IsActive: {}", isActive);
+//            Assert.assertTrue("Redis server is started", isActive);
+//        }
+//        finally {
+//            if (redisServer != null && redisServer.isActive()) {
+//                redisServer.stop();
+//            }
+//        }
+//    }
 
     @Test
     public void testRedisWrite() throws IOException {
@@ -67,9 +65,9 @@ public class RedisTest {
             Assert.assertTrue(keys.size() == 100);
         }
         finally {
-            if (redisServer != null && redisServer.isActive()) {
-                redisServer.stop();
-            }
+//            if (redisServer != null && redisServer.isActive()) {
+//                redisServer.stop();
+//            }
         }
     }
 }

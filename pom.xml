@@ -2,7 +2,7 @@
         xmlns="http://maven.apache.org/POM/4.0.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
-        >
+>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.studerw</groupId>
     <artifactId>long-polling-redis</artifactId>
@@ -11,8 +11,9 @@
     <name>Spring MVC Application</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java-version>1.7</java-version>
-        <io.spring.platform-version>1.1.2.RELEASE</io.spring.platform-version>
+        <java-version>1.8</java-version>
+        <!--        <io.spring.platform-version>1.1.2.RELEASE</io.spring.platform-version>-->
+        <io.spring.platform-version>1.1.5.RELEASE</io.spring.platform-version>
         <!-- AssertJ is not a part of Spring IO platform, so the version must be provided explicitly -->
         <assertj-core-version>1.5.0</assertj-core-version>
         <skipTests>true</skipTests>
@@ -37,19 +38,19 @@
 
 
         <!--<dependency>-->
-            <!--<groupId>org.thymeleaf</groupId>-->
-            <!--<artifactId>thymeleaf-spring4</artifactId>-->
-            <!--&lt;!&ndash; Avoid org.hibernate.jpa.boot.archive.spi.ArchiveException: Could not build ClassFile in Java 8 &ndash;&gt;-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<artifactId>javassist</artifactId>-->
-                    <!--<groupId>org.javassist</groupId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                    <!--<artifactId>ognl</artifactId>-->
-                    <!--<groupId>ognl</groupId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
+        <!--<groupId>org.thymeleaf</groupId>-->
+        <!--<artifactId>thymeleaf-spring4</artifactId>-->
+        <!--&lt;!&ndash; Avoid org.hibernate.jpa.boot.archive.spi.ArchiveException: Could not build ClassFile in Java 8 &ndash;&gt;-->
+        <!--<exclusions>-->
+        <!--<exclusion>-->
+        <!--<artifactId>javassist</artifactId>-->
+        <!--<groupId>org.javassist</groupId>-->
+        <!--</exclusion>-->
+        <!--<exclusion>-->
+        <!--<artifactId>ognl</artifactId>-->
+        <!--<groupId>ognl</groupId>-->
+        <!--</exclusion>-->
+        <!--</exclusions>-->
         <!--</dependency>-->
 
         <dependency>
@@ -98,11 +99,16 @@
             <artifactId>guava</artifactId>
         </dependency>
         <!-- Redis -->
-        <dependency>
-            <groupId>com.github.kstyrc</groupId>
-            <artifactId>embedded-redis</artifactId>
-            <version>0.6</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.github.kstyrc</groupId>-->
+<!--            <artifactId>embedded-redis</artifactId>-->
+<!--            <version>0.6</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>it.ozimov</groupId>-->
+<!--            <artifactId>embedded-redis</artifactId>-->
+<!--            <version>0.7.2</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
@@ -177,6 +183,11 @@
                     <path>/long-polling-redis</path>
                 </configuration>
             </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>org.eclipse.jetty</groupId>-->
+            <!--                <artifactId>jetty-maven-plugin</artifactId>-->
+            <!--                <version>9.4.18.v20190429</version>-->
+            <!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
