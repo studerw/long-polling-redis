@@ -1,4 +1,4 @@
-![long-polling-redis](https://github.com/studerw/long-polling-redis/long-polling-redis.png)
+![long-polling-redis](https://github.com/studerw/long-polling-redis/blob/master/long-polling-redis.png)
 
 # long-polling-redis
 Example App showing client side long polling using Spring MVC and Redis Pub/Sub.
