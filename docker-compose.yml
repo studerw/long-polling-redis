@@ -1,0 +1,31 @@
+version: '3'
+services:
+  app:
+    image: long-polling-redis:latest
+#    command: ["node", "index.js"]
+#    environment:
+#      - NODE_ENV=production
+#      - RHOST=redis
+    hostname: tomcat
+    ports:
+      - 8080:8080
+      - 8443:8443
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:4
+#    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    ports:
+      - 6379:6379
+#    networks:
+#      - redis-net
+#    volumes:
+#      - redis-data:/data
+
+#networks:
+#  redis-net:
+#
+#volumes:
+#  redis-data:

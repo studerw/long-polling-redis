@@ -6,7 +6,7 @@ binding, and a large Redis temporary file will take up space in your home direct
 # long-polling-redis
 Example App showing client side long polling using Spring MVC and Redis Pub/Sub.
 
-Uses Spring 4 MVC, Spring Data Redis, JQuery on the front-end, and an embedded Redis Server.
+Uses Spring 4 MVC, Spring Data Redis, JQuery on the front-end, Tomcat 8, and Redis 4.
 
 ### Overview
 
@@ -17,18 +17,20 @@ For example, if one were to design a email app similar to GMail, the user will e
 messages to be shown in the inbox count automatically (i.e. without having to constantly refresh the page).
 
 Polling again and again is a waste of resources on both the client and server, especially when the frequency
-of polling is far greater than new incoming messages are received. 
+of polling is far greater than new incoming messages are received.
 
 A better way to approach the problem is by using async requests on a pubsub channel on the backend, along
 with a recursive function on the front-end that only makes new requests when the old has actually returned.
 
 
-### Instructions
+### Building
 
 From the command line, run:
 
 ````
-$ mvn tomcat7:run
+$ mvn clean install
+$ docker build -t "long-polling-redis" .
+$ docker-compose up
 ````
 
 Open your browser to [http://127.0.0.1:8080/long-polling-redis](http://127.0.0.1:8080/long-polling-redis).
